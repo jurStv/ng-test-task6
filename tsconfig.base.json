@@ -15,7 +15,14 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@airline/app/*": ["apps/airline/src/app/*"],
+      "@airline/env": ["apps/airline/src/environments"],
+      "@airline/model": ["libs/airline/model/src/index.ts"],
+      "@airline/test-data": ["libs/airline/test-data/src/index.ts"],
+      "@airline/shared": ["libs/airline/shared/src/index.ts"],
+      "@airline/flight": ["libs/airline/flight/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

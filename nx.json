@@ -24,11 +24,21 @@
   },
   "projects": {
     "airline": {
+      "tags": [],
+      "implicitDependencies": ["airline-flight", "airline-test-data", "airline-model"]
+    },
+    "airline-model": {
       "tags": []
     },
-    "airline-e2e": {
+    "airline-test-data": {
+      "tags": []
+    },
+    "airline-shared": {
+      "tags": []
+    },
+    "airline-flight": {
       "tags": [],
-      "implicitDependencies": ["airline"]
+      "implicitDependencies": ["airline-shared", "airline-model"]
     }
   }
 }

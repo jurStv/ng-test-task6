@@ -1,118 +1,69 @@
-<header class="flex">
-  <img
-    alt="Nx logo"
-    width="75"
-    src="https://nx.dev/assets/images/nx-logo-white.svg"
-  />
-  <h1>Welcome to {{ title }}!</h1>
-</header>
-<main>
-  <h2>Resources &amp; Tools</h2>
-  <p>
-    Thank you for using and showing some ♥ for Nx.
-  </p>
-  <div class="flex github-star-container">
-    <a
-      href="https://github.com/nrwl/nx"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      If you like Nx, please give it a star:
-      <div class="github-star-badge">
-        <svg
-          class="material-icons"
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-        >
-          <path d="M0 0h24v24H0z" fill="none" />
-          <path
-            d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-          />
-        </svg>
-        Star
+<div class="search-bar">
+  <airline-flight-search-bar (search)="handleSearch($event)" [stations]="stations"></airline-flight-search-bar>
+</div>
+<div class="flights-results">
+  <table mat-table matSort
+    (matSortChange)="sortData($event)"
+    [dataSource]="flight$ | async"
+    multiTemplateDataRows
+    class="mat-elevation-z8">
+    <ng-container matColumnDef="origin">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Origin</th>
+      <td mat-cell *matCellDef="let element">{{ stationsDict[element.origin] }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="destination">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Destination</th>
+      <td mat-cell *matCellDef="let element">{{ stationsDict[element.destination] }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="price">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Price ($)</th>
+      <td mat-cell *matCellDef="let element">{{ element.price }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="connections">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Connections</th>
+      <td mat-cell *matCellDef="let element">{{ element.connections.length === 0 ? 0 : element.connections.length -1 }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="duration">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Duration</th>
+      <td mat-cell *matCellDef="let element">{{ element.duration | duration: 'biggest' : 'full' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="startAt">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Start at</th>
+      <td mat-cell *matCellDef="let element">{{ element.startAt | date: 'MMM d, y, h:mm a' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="endAt">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>End at</th>
+      <td mat-cell *matCellDef="let element">{{ element.endAt | date: 'MMM d, y, h:mm a' }}</td>
+    </ng-container>
+
+    <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+    <ng-container matColumnDef="expandedDetail">
+      <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+      <div class="flight-detail"
+            [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+        <div class="flight-connection" *ngFor="let connectionFlight of element.connections">
+          <div class="flight-position"> From: {{stationsDict[connectionFlight.origin]}} </div>
+          <div class="flight-position"> To: {{stationsDict[connectionFlight.destination]}} </div>
+          <div class="flight-position"> Duration: {{connectionFlight.duration | duration: 'biggest' : 'full'}} </div>
+          <div class="flight-position"> Start at: {{connectionFlight.startAt | date: 'MMM d, y, h:mm a'}} </div>
+          <div class="flight-position"> End at: {{connectionFlight.endAt | date: 'MMM d, y, h:mm a'}} </div>
+        </div>
       </div>
-    </a>
-  </div>
-  <p>
-    Here are some links to help you get started.
-  </p>
-  <ul class="resources">
-    <li class="col-span-2">
-      <a
-        class="resource flex"
-        href="https://connect.nrwl.io/app/courses/nx-workspaces/intro"
-      >
-        Nx video course
-      </a>
-    </li>
-    <li class="col-span-2">
-      <a
-        class="resource flex"
-        href="https://nx.dev/angular/getting-started/what-is-nx"
-      >
-        Nx video tutorial
-      </a>
-    </li>
-    <li class="col-span-2">
-      <a
-        class="resource flex"
-        href="https://nx.dev/angular/tutorial/01-create-application"
-      >
-        Interactive tutorial
-      </a>
-    </li>
-    <li class="col-span-2">
-      <a class="resource flex" href="https://nx.app/">
-        <svg
-          width="36"
-          height="36"
-          viewBox="0 0 120 120"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M120 15V30C103.44 30 90 43.44 90 60C90 76.56 76.56 90 60 90C43.44 90 30 103.44 30 120H15C6.72 120 0 113.28 0 105V15C0 6.72 6.72 0 15 0H105C113.28 0 120 6.72 120 15Z"
-            fill="#0E2039"
-          />
-          <path
-            d="M120 30V105C120 113.28 113.28 120 105 120H30C30 103.44 43.44 90 60 90C76.56 90 90 76.56 90 60C90 43.44 103.44 30 120 30Z"
-            fill="white"
-          />
-        </svg>
-        <span class="gutter-left">Nx Cloud</span>
-      </a>
-    </li>
-  </ul>
-  <h2>Next Steps</h2>
-  <p>Here are some things you can do with Nx.</p>
-  <details open>
-    <summary>Add UI library</summary>
-    <pre>
-# Generate UI lib
-ng g @nrwl/angular:lib ui
+      </td>
+    </ng-container>
 
-# Add a component
-ng g @nrwl/angular:component xyz --project ui</pre
-    >
-  </details>
-  <details>
-    <summary>View dependency graph</summary>
-    <pre>nx dep-graph</pre>
-  </details>
-  <details>
-    <summary>Run affected commands</summary>
-    <pre>
-# see what's been affected by changes
-ng affected:dep-graph
-
-# run tests for current changes
-ng affected:test
-
-# run e2e tests for current changes
-ng affected:e2e
-</pre
-    >
-  </details>
-</main>
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+    <tr mat-row *matRowDef="let element; columns: columnsToDisplay;"
+      class="flight-row"
+      [class.flight-expanded-row]="expandedElement === element"
+      (click)="expandFlight(element)">
+    </tr>
+    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="flight-detail-row"></tr>
+  </table>
+</div>

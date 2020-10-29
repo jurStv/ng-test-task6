@@ -1,0 +1,70 @@
+<mat-card>
+  <form [formGroup]="formGroup" (submit)="handleSearch()">
+    <mat-form-field class="box">
+      <mat-label>Pick origin</mat-label>
+      <input type="text"
+             placeholder="Pick origin"
+             matInput
+             formControlName="origin"
+             [matAutocomplete]="autoOrigin">
+      <mat-autocomplete id="autoOrigin" #autoOrigin="matAutocomplete" [displayWith]="displayFn">
+        <mat-option *ngFor="let station of filteredOriginStation$ | async" [value]="station.id">
+          {{station.name}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+    <mat-form-field class="box">
+      <mat-label>Pick destination</mat-label>
+      <input type="text"
+             placeholder="Pick destination"
+             matInput
+             formControlName="destination"
+             [matAutocomplete]="autoDestination">
+      <mat-autocomplete id="autoDestination" #autoDestination="matAutocomplete" [displayWith]="displayFn">
+        <mat-option *ngFor="let station of filteredDestinationStation$ | async" [value]="station.id">
+          {{station.name}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+    <div>
+      <span>Min price:</span>
+      <mat-slider
+        thumbLabel
+        min="1"
+        [max]="maxMinPrice"
+        tickInterval="1"
+        formControlName="minPrice">
+      </mat-slider>
+    </div>
+    <div>
+      <span>Max price:</span>
+      <mat-slider
+        thumbLabel
+        [min]="minMaxPrice"
+        max="1000"
+        tickInterval="1"
+        formControlName="maxPrice">
+      </mat-slider>
+    </div>
+    <mat-form-field class="box">
+      <mat-label>Select number of connections</mat-label>
+      <mat-select formControlName="connections">
+        <mat-option *ngFor="let option of connectionsOptions" [value]="option.value">
+          {{option.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="box" appearance="fill">
+      <mat-label>Enter a date range</mat-label>
+      <mat-date-range-input [rangePicker]="picker">
+        <input matStartDate formControlName="fromDate" placeholder="Start date">
+        <input matEndDate formControlName="toDate" placeholder="End date">
+      </mat-date-range-input>
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-form-field>
+    <div>
+      <button type="submit" mat-stroked-button [disabled]="formGroup.invalid">Search</button>
+    </div>
+  </form>
+</mat-card>
